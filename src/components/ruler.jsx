@@ -21,10 +21,10 @@ class ruler extends Component {
       fontSize: 12,
       fontColor: "#666",
       fontMarginTop: 35,
-      // maxValue: 86400,
-      maxValue: 360,
-      minValue: 0,
-      currentValue: 86380,
+      maxValue: 86400,
+      maxValue: 0,
+      minValue: 100,
+      currentValue: 86350,
       // currentValue: 0,
     };
 
@@ -41,10 +41,7 @@ class ruler extends Component {
       year:null,
       date: new Date(),
       startTimeDate: {
-        startDate: 8,
-        startMonth: 6,
-        startYear: 2020,
-        startHours: 0,
+        startHours: null,
         startMinutes: 0,
         startSeconds: 0,
       },
@@ -236,10 +233,12 @@ class ruler extends Component {
   //  d=new Date();
   //  n=d.getDate();
   handleValue = (value) => {  
+    // console.log(value);
+    
     var d=new Date();
-   var n=31
-   var m =1
-   var{month,date}=this.state;
+   var n=30
+   var m =4
+   var{month}=this.state;
     if (value) {
       let {
         startHours,
@@ -257,9 +256,9 @@ class ruler extends Component {
           
         }
       }
-      if (startMinutes === 59) {
-        startMinutes = 1;
-      }
+      // if (startMinutes === 59) {
+      //   startMinutes = 1;
+      // }
 
       this.setState({
         ...this.state,
@@ -274,44 +273,49 @@ class ruler extends Component {
 
         },
       });
-    
-      if(startHours===0){
-        if(this.state.date===28 || this.state.date===30 || this.state.date===31){
-          this.setState({
-            date:this.state.date=1,
-            month:this.state.month+=1
-          })
-        }else{
-          this.setState({
-            date:this.state.date+=1
-          })
-        }
-      }     
-      for(var j=1;j<=12;j++){
-        
-        if( j===1||j===3||j===5||j===7||j===11){
-          
-          if(this.state.date===31 && startHours===0){ 
-            console.log(month);
-            
+      console.log(startHours);
+      
+      
+        if( this.state.month===5||this.state.month===3||this.state.month===1||this.state.month===7||this.state.month===11){
+          // console.log(this.state.month);
+          // console.log(this.state.date);
+          if(this.state.date===31 &&startHours===23&&startMinutes===59){   
             this.setState({
               date:this.state.date=1,
               month:this.state.month+=1
-            })  
+            }) 
+            console.log(this.state.date); 
+            console.log(this.state.month); 
           }
+          if(this.state.date!==31&&startHours===0&&startMinutes===0&&startSeconds===0){
+            this.setState({
+              date:this.state.date+=1
+            })
+          }
+        
         }
-        if(j===2){
+        if(this.state.month===2){
+          if(this.state.date!==28&&startHours>=0&startMinutes>=0){
 
+            this.setState({
+              date:this.state.date+=1
+            })
+          }
           if(this.state.date===28 && startHours===0){
-            console.log(month); 
+            // console.log("fsdfsd",this.state.date); 
             this.setState({
               date:this.state.date=1,
               month:this.state.month+=1
             })
           }
         }
-        if(j===4|| j===6|| j===8|| j===9|| j===10|| j===12){
-          if(this.state.date===30 && startHours===0){
+        if(this.state.month===4|| this.state.month===6|| this.state.month===8|| this.state.month===9|| this.state.month===10|| this.state.month===12){
+          if(this.state.date!=30&&startHours===23&startMinutes===59){
+            this.setState({
+              date:this.state.date+=1
+            })
+          }
+          if(this.state.date===30 && startHours===0&&startMinutes>=0){
             this.setState({
               date:this.state.date=1,
               month:this.state.month+=1
@@ -320,7 +324,7 @@ class ruler extends Component {
         }
         // console.log(month);
         
-      }
+      
       
     }
   };
