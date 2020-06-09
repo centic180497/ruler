@@ -25,6 +25,7 @@ class ruler extends Component {
       maxValue: 360,
       minValue: 0,
       currentValue: 86380,
+      // currentValue: 0,
     };
 
     this.localState = {
@@ -35,12 +36,12 @@ class ruler extends Component {
     this.state = {
       isMouseDown: false,
       value: 0,
-      date:5,
-      month:'',
-      year:'',
+      date:null,
+      month:null,
+      year:null,
       date: new Date(),
       startTimeDate: {
-        startDate: 7,
+        startDate: 8,
         startMonth: 6,
         startYear: 2020,
         startHours: 0,
@@ -138,7 +139,7 @@ class ruler extends Component {
   drawRuler = () => {
     const canvas = document.getElementById("timeline"),
       context = canvas.getContext("2d");
-    // eslint-disable-next-line no-self-assign
+
     canvas.height = canvas.height;
     let {
       canvasWidth,
@@ -159,34 +160,11 @@ class ruler extends Component {
     } = this.options;
 
     let { startTimeDate, endTimeDate } = this.state;
-
-    // console.log('startTimeDate', startTimeDate);
-    // console.log('endTimeDate', endTimeDate);
-    
-
-    // let y = endTimeDate.endYear - startTimeDate.startYear;
-    // let m = endTimeDate.endMonth - startTimeDate.startMonth;
-    // let d = endTimeDate.endDate - startTimeDate.startDate;
-    // let h = endTimeDate.endHours - startTimeDate.startHours;
-    // let minu = endTimeDate.endMinutes - startTimeDate.startMinutes;
-    // let s = endTimeDate.endSeconds - startTimeDate.startSeconds;
-
-    // let maxCurrentValue = s + (minu * 60) + (h * 3600) + ( d * 86400) + ( m * 2592000 );
-    // console.log('maxCurrentValue', maxCurrentValue);
-
-      // currentValue =
-      // currentValue > minValue
-      //   ? currentValue < maxValue
-      //     ? currentValue
-      //     : maxValue
-      //   : minValue;
-   
-    
     currentValue =
       (Math.round((currentValue * 10) / precision) * precision) / 10;
     this.options.currentValue = currentValue;
 
-    // console.log('currentValue: ', currentValue);
+
 
     this.handleValue(currentValue);
 
@@ -204,17 +182,7 @@ class ruler extends Component {
 
     if (endValue === maxValue) {
       endValue = currentValue + maxValue ;
-
-      // maxValue = currentValue;
     }
-
-    // if (
-    //   startTimeDate.startHours === endTimeDate.endHours &&
-    //   startTimeDate.startMinutes === endTimeDate.endMinutes &&
-    //   startTimeDate.startSeconds === endTimeDate.endSeconds
-    // ) {
-
-    // }
 
     let origin = {
       x:
@@ -269,9 +237,9 @@ class ruler extends Component {
   //  n=d.getDate();
   handleValue = (value) => {  
     var d=new Date();
-   var n=28;
-   var m =2;
-   var{month}=this.state;
+   var n=31
+   var m =1
+   var{month,date}=this.state;
     if (value) {
       let {
         startHours,
@@ -280,14 +248,16 @@ class ruler extends Component {
       } = this.state.startTimeDate;
 
       for (let i = 0; i < value; i++) {
+        startSeconds++ ;
         startHours = Math.floor(i / 3600)%24 ;
         startMinutes = Math.floor(i / 60) % 60;
 
         if (i % 60 === 0) {
-          startSeconds = 1;
+          startSeconds=1 ;
+          
         }
       }
-      if (startMinutes === 60) {
+      if (startMinutes === 59) {
         startMinutes = 1;
       }
 
@@ -304,38 +274,52 @@ class ruler extends Component {
 
         },
       });
-     
-       
-      // if(startHours===0 && startMinutes===0){
-      //   this.setState({
-      //     date:this.state.date+=1
-      //   })
-      // }
-     
+    
+      if(startHours===0){
+        if(this.state.date===28 || this.state.date===30 || this.state.date===31){
+          this.setState({
+            date:this.state.date=1,
+            month:this.state.month+=1
+          })
+        }else{
+          this.setState({
+            date:this.state.date+=1
+          })
+        }
+      }     
       for(var j=1;j<=12;j++){
         
-        if(j===1||j===3||j===5||j===7||j===11){
-          // console.log(this.state.date);
+        if( j===1||j===3||j===5||j===7||j===11){
           
-          if( this.state.date === 31 && startHours===0){
-            this.state.date++
+          if(this.state.date===31 && startHours===0){ 
+            console.log(month);
+            
             this.setState({
               date:this.state.date=1,
               month:this.state.month+=1
-            })
-            // console.log(month);
-            
+            })  
           }
         }
         if(j===2){
+
           if(this.state.date===28 && startHours===0){
-            this.state.date++
+            console.log(month); 
             this.setState({
               date:this.state.date=1,
               month:this.state.month+=1
             })
           }
         }
+        if(j===4|| j===6|| j===8|| j===9|| j===10|| j===12){
+          if(this.state.date===30 && startHours===0){
+            this.setState({
+              date:this.state.date=1,
+              month:this.state.month+=1
+            })
+          }
+        }
+        // console.log(month);
+        
       }
       
     }
@@ -364,36 +348,6 @@ class ruler extends Component {
      
           </span>
         </div>
-
-        {/* <div className="endTime">
-          <span>
-            <b>
-              Ngày:
-              {`${startTimeDate.startDate}/${startTimeDate.startMonth}/${startTimeDate.startYear}`}{" "}
-            </b>
-          </span> 
-           <span className="time">
-            <b>
-              {`${endTimeDate.endHours}h ${endTimeDate.endMinutes}p ${endTimeDate.endSeconds}s`}
-            </b>{" "}
-       setEndTimeDate = () => {
-    const { date } = this.state;
-
-    this.setState({
-      ...this.state,
-      endTimeDate: {
-        endDate: date.getDate(),
-        endMonth: date.getMonth() + 1,
-        endYear: date.getFullYear(),
-        // endHours: date.getHours(),
-        endHours: 0,
-        endMinutes: date.getMinutes(),
-        endSeconds: date.getSeconds() + 1,
-      },
-    });
-  };
-          </span>
-        </div> */}
         <canvas id="timeline" width="1920" height="30"></canvas>
       </div>
     );
